@@ -1,0 +1,24 @@
+[project]
+name = "anm"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "V13tTh4nh", email = "104074587+V13tthnh@users.noreply.github.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "bleach>=6.4.0",
+    "fastapi[standard]>=0.141.1",
+    "itsdangerous>=2.2.0",
+    "jinja2>=3.1.6",
+    "python-multipart>=0.0.32",
+    "slowapi>=0.1.10",
+]
+
+[tool.pyright]
+extraPaths = ["."]
+executionEnvironments = [
+  { root = "." }
+]
+

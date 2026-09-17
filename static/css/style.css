@@ -1,0 +1,1293 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
+/* ==========================================================================
+   SHADCN / UI DESIGN SYSTEM & CSS TOKENS
+   ========================================================================== */
+:root {
+  /* Color Palette - HSL & Hex Standard */
+  --background: #ffffff;
+  --foreground: #090d16;
+  
+  --card: #ffffff;
+  --card-foreground: #090d16;
+  
+  --popover: #ffffff;
+  --popover-foreground: #090d16;
+  
+  --primary: #0f172a;
+  --primary-hover: #1e293b;
+  --primary-foreground: #f8fafc;
+  
+  --secondary: #f1f5f9;
+  --secondary-hover: #e2e8f0;
+  --secondary-foreground: #0f172a;
+  
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
+  
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+  
+  --destructive: #ef4444;
+  --destructive-hover: #dc2626;
+  --destructive-foreground: #ffffff;
+
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --input: #e2e8f0;
+  --ring: #0f172a;
+  --radius: 0.5rem;
+
+  /* Custom Security Mode & Tag Tokens */
+  --vuln-bg: #fef2f2;
+  --vuln-border: #fecaca;
+  --vuln-text: #dc2626;
+  --vuln-hover: #fee2e2;
+
+  --patched-bg: #f0fdf4;
+  --patched-border: #bbf7d0;
+  --patched-text: #16a34a;
+  --patched-hover: #dcfce7;
+
+  --badge-brand-bg: #eff6ff;
+  --badge-brand-border: #bfdbfe;
+  --badge-brand-text: #2563eb;
+
+  --tag-bg: #f5f3ff;
+  --tag-border: #ddd6fe;
+  --tag-text: #6d28d9;
+  --tag-hover: #ede9fe;
+
+  /* Typography */
+  --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Layout Containers */
+  --container-width: 1140px;
+  --read-width: 780px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+/* Base Reset & Globals */
+*, ::before, ::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography Base */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--foreground);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+h1 { font-size: 2.25rem; }
+h2 { font-size: 1.75rem; }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1rem; }
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+code, pre, .font-mono {
+  font-family: var(--font-mono);
+}
+
+/* ==========================================================================
+   NAVBAR & HEADER (Shadcn Sticky Header)
+   ========================================================================== */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  border-bottom: 1px solid var(--border);
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: border-color 0.2s ease;
+}
+
+.nav-container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--foreground);
+  letter-spacing: -0.03em;
+  transition: opacity 0.15s ease;
+}
+
+.logo:hover {
+  opacity: 0.9;
+}
+
+.logo-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: var(--shadow-xs);
+}
+
+.logo-tag {
+  color: #2563eb;
+  font-weight: 800;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+}
+
+.nav-link-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  transition: all 0.15s ease;
+}
+
+.nav-link-item:hover {
+  color: var(--foreground);
+  background-color: var(--accent);
+}
+
+.nav-link-item.active {
+  color: var(--foreground);
+  background-color: var(--accent);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   LAYOUT CONTAINERS & GRID
+   ========================================================================== */
+.main-container {
+  max-width: var(--container-width);
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  width: 100%;
+  flex: 1;
+}
+
+.read-container {
+  max-width: var(--read-width);
+  margin: 0 auto;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .home-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   HERO SECTION & SECURITY CALLOUT BANNER
+   ========================================================================== */
+.hero-section {
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-badge-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  background-color: var(--secondary);
+  border: 1px solid var(--border);
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  margin-bottom: 1rem;
+}
+
+.hero-statement {
+  font-size: clamp(2rem, 3.8vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--foreground);
+  letter-spacing: -0.035em;
+  margin-bottom: 0.85rem;
+}
+
+.hero-statement .highlight {
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+  font-size: 1.025rem;
+  color: var(--muted-foreground);
+  font-weight: 400;
+  line-height: 1.65;
+  max-width: 660px;
+}
+
+/* Security Spec Banner */
+.vuln-banner {
+  background-color: var(--vuln-bg);
+  border: 1px dashed var(--vuln-border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 2rem;
+  font-size: 0.875rem;
+  color: #7f1d1d;
+  box-shadow: var(--shadow-xs);
+}
+
+.vuln-banner-header {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--vuln-text);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.vuln-banner code {
+  background: rgba(255, 255, 255, 0.8);
+  color: #991b1b;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  font-family: var(--font-mono);
+  font-size: 0.825rem;
+}
+
+/* ==========================================================================
+   BUTTONS & ACTIONS (Shadcn Standard Variants)
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  height: 2.375rem; /* 38px */
+  border-radius: var(--radius);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-xs);
+  user-select: none;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
+}
+
+/* Button Variants */
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary {
+  background-color: var(--secondary);
+  color: var(--secondary-foreground);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover {
+  background-color: var(--secondary-hover);
+  border-color: var(--border-strong);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--foreground);
+  border-color: var(--border);
+}
+
+.btn-outline:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+  border-color: var(--border-strong);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--muted-foreground);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.btn-ghost:hover {
+  background-color: var(--accent);
+  color: var(--foreground);
+}
+
+.btn-destructive {
+  background-color: var(--destructive);
+  color: var(--destructive-foreground);
+  border-color: var(--destructive);
+}
+
+.btn-destructive:hover {
+  background-color: var(--destructive-hover);
+  border-color: var(--destructive-hover);
+}
+
+.btn-sm {
+  height: 2rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8125rem;
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.btn-lg {
+  height: 2.75rem;
+  padding: 0.65rem 1.5rem;
+  font-size: 1rem;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+/* ==========================================================================
+   INPUTS, FORM CONTROLS & SEARCH
+   ========================================================================== */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 0.4rem;
+}
+
+.form-control, .input {
+  display: flex;
+  width: 100%;
+  height: 2.375rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--input);
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  box-shadow: var(--shadow-xs);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control:focus {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.1);
+}
+
+select.form-control {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2064748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2.25rem;
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 110px;
+  resize: vertical;
+  padding: 0.6rem 0.75rem;
+}
+
+/* Input File Styling */
+input[type="file"].form-control {
+  padding: 0.25rem 0.5rem;
+  height: 2.5rem;
+  cursor: pointer;
+}
+
+input[type="file"].form-control::file-selector-button {
+  border: 1px solid var(--border);
+  background-color: var(--secondary);
+  color: var(--secondary-foreground);
+  padding: 0.25rem 0.65rem;
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  margin-right: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+input[type="file"].form-control::file-selector-button:hover {
+  background-color: var(--secondary-hover);
+}
+
+/* Search Form Wrapper */
+.search-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.search-input-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.search-input-wrapper .search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted-foreground);
+  pointer-events: none;
+}
+
+.search-input-wrapper .form-control {
+  padding-left: 2.25rem;
+}
+
+/* ==========================================================================
+   CARDS & POST FEED (Shadcn Card Aesthetics)
+   ========================================================================== */
+.card {
+  border-radius: calc(var(--radius) + 4px);
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-xs);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+.post-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.staggered-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.post-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.post-title a {
+  color: var(--foreground);
+  transition: color 0.15s ease;
+}
+
+.post-title a:hover {
+  color: #2563eb;
+}
+
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.post-author {
+  color: var(--foreground);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.avatar-sm {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+
+.avatar-lg {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.post-excerpt {
+  color: #334155;
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+/* ==========================================================================
+   BADGES & CHIPS (Shadcn Pill & Badge Variants)
+   ========================================================================== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.badge-mode {
+  font-family: var(--font-mono);
+  font-size: 0.725rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+}
+
+.badge-vulnerable {
+  background-color: var(--vuln-bg);
+  color: var(--vuln-text);
+  border-color: var(--vuln-border);
+}
+
+.badge-vulnerable:hover {
+  background-color: var(--vuln-hover);
+}
+
+.badge-patched {
+  background-color: var(--patched-bg);
+  color: var(--patched-text);
+  border-color: var(--patched-border);
+}
+
+.badge-patched:hover {
+  background-color: var(--patched-hover);
+}
+
+.category-badge {
+  background-color: var(--badge-brand-bg);
+  color: var(--badge-brand-text);
+  border: 1px solid var(--badge-brand-border);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+}
+
+.category-badge:hover {
+  background-color: #dbeafe;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.85rem;
+}
+
+.tag-chip {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--tag-text);
+  background-color: var(--tag-bg);
+  border: 1px solid var(--tag-border);
+  border-radius: calc(var(--radius) - 2px);
+  padding: 0.15rem 0.5rem;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.tag-chip:hover, .tag-chip.active {
+  background-color: var(--tag-hover);
+  border-color: #c4b5fd;
+}
+
+/* ==========================================================================
+   SIDEBAR WIDGETS
+   ========================================================================== */
+.sidebar {
+  position: sticky;
+  top: 4.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sidebar-widget {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-xs);
+}
+
+.sidebar-title {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-foreground);
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.sidebar-cat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sidebar-cat-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  background-color: var(--secondary);
+}
+
+.sidebar-cat-item:hover, .sidebar-cat-item.active {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.sidebar-tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/* ==========================================================================
+   ALERTS & NOTIFICATIONS (Shadcn Alert Component)
+   ========================================================================== */
+.alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.15rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-xs);
+}
+
+.alert-error {
+  background-color: var(--vuln-bg);
+  border-color: var(--vuln-border);
+  color: var(--vuln-text);
+}
+
+.alert-success {
+  background-color: var(--patched-bg);
+  border-color: var(--patched-border);
+  color: var(--patched-text);
+}
+
+.alert-warning {
+  background-color: #fffbeb;
+  border-color: #fde68a;
+  color: #b45309;
+}
+
+.alert-info {
+  background-color: #f0f9ff;
+  border-color: #bae6fd;
+  color: #0369a1;
+}
+
+/* ==========================================================================
+   TABLES (Shadcn Table Design)
+   ========================================================================== */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.table-custom {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.table-custom th {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted-foreground);
+  padding: 0.75rem 1rem;
+  background-color: var(--secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+.table-custom td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+.table-custom tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table-custom tbody tr:hover {
+  background-color: rgba(241, 245, 249, 0.6);
+}
+
+.table-action-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.table-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 1.75rem 1.5rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+  background-color: var(--muted);
+  margin-top: auto;
+}
+
+/* Icon utilities */
+.icon-inline {
+  display: inline-flex;
+  align-self: center;
+  vertical-align: middle;
+}
+
+/* ==========================================================================
+   SCROLL TO TOP BUTTON (Shadcn FAB)
+   ========================================================================== */
+.scroll-to-top-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 99;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border: 1px solid var(--primary);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease, background-color 0.15s ease;
+}
+
+.scroll-to-top-btn.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.scroll-to-top-btn:hover {
+  background-color: var(--primary-hover);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.scroll-to-top-btn:active {
+  transform: translateY(0) scale(0.95);
+}
+
+/* Disable native browser password reveal icons (Edge, IE, Chrome, Safari) */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none !important;
+}
+
+input::-webkit-credentials-auto-fill-button,
+input::-webkit-contacts-auto-fill-button {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-input-wrapper input {
+  padding-right: 2.75rem !important;
+}
+
+.toggle-password-btn {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--muted-foreground);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: var(--radius);
+  transition: color 0.15s ease, background-color 0.15s ease;
+  user-select: none;
+}
+
+.toggle-password-btn:hover {
+  color: var(--foreground);
+  background-color: var(--accent);
+}
+
+.toggle-password-btn svg {
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   ADMIN TRADITIONAL LEFT SIDEBAR & LAYOUT
+   ========================================================================== */
+.admin-layout-container {
+  display: grid !important;
+  grid-template-columns: 260px 1fr !important;
+  gap: 1.75rem !important;
+  align-items: start !important;
+}
+
+@media (max-width: 880px) {
+  .admin-layout-container {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.admin-sidebar {
+  position: sticky !important;
+  top: 5rem !important;
+}
+
+.admin-sidebar-card {
+  background-color: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: calc(var(--radius) + 2px) !important;
+  padding: 1.25rem !important;
+  box-shadow: var(--shadow-xs) !important;
+}
+
+.admin-sidebar-header {
+  padding-bottom: 0.85rem !important;
+  margin-bottom: 1rem !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.admin-sidebar-title {
+  font-family: var(--font-heading) !important;
+  font-size: 1.1rem !important;
+  font-weight: 800 !important;
+  color: var(--foreground) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.admin-sidebar-subtitle {
+  font-family: var(--font-mono) !important;
+  font-size: 0.7rem !important;
+  color: var(--muted-foreground) !important;
+  margin-top: 0.25rem !important;
+  letter-spacing: 0.04em !important;
+}
+
+.admin-sidebar-menu {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.4rem !important;
+}
+
+.admin-tab-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.65rem !important;
+  width: 100% !important;
+  padding: 0.65rem 0.85rem !important;
+  border-radius: var(--radius) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  color: var(--muted-foreground) !important;
+  background-color: transparent !important;
+  border: 1px solid transparent !important;
+  text-align: left !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  user-select: none !important;
+  outline: none !important;
+}
+
+.admin-tab-btn:hover {
+  color: var(--foreground) !important;
+  background-color: var(--secondary) !important;
+  border-color: var(--border) !important;
+}
+
+.admin-tab-btn.active {
+  color: var(--primary-foreground) !important;
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  font-weight: 600 !important;
+  box-shadow: var(--shadow-xs) !important;
+}
+
+.admin-tab-btn svg {
+  flex-shrink: 0 !important;
+}
+
+.admin-content-area {
+  min-width: 0 !important;
+}
+
+.admin-tab-content {
+  display: none !important;
+}
+
+.admin-tab-content.active {
+  display: block !important;
+  animation: adminTabFade 0.2s ease-in-out !important;
+}
+
+@keyframes adminTabFade {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   ADMIN PANEL CONTAINER, SEARCH & PAGINATION (Full-Bleed Table Layout)
+   ========================================================================== */
+.admin-panel-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-xs);
+  width: 100%;
+}
+
+.admin-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.admin-panel-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--foreground);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-panel-subtitle {
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+  margin-top: 0.2rem;
+}
+
+.admin-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.admin-search-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 240px;
+  max-width: 420px;
+}
+
+.admin-search-wrapper .search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted-foreground);
+  pointer-events: none;
+}
+
+.admin-search-wrapper input.admin-table-search {
+  padding-left: 2.25rem !important;
+  height: 2.375rem !important;
+  font-size: 0.875rem !important;
+}
+
+.table-pagination-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.pagination-info {
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.page-indicator {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--foreground);
+  padding: 0 0.5rem;
+}
+
+/* ==========================================================================
+   MODAL COMPONENT (Shadcn UI Dialog Aesthetic)
+   ========================================================================== */
+.modal-backdrop {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background-color: rgba(9, 13, 22, 0.6) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+  z-index: 1000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1.5rem !important;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.modal-backdrop.show {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.modal-card {
+  background-color: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: calc(var(--radius) + 4px) !important;
+  box-shadow: var(--shadow-lg) !important;
+  width: 100% !important;
+  max-width: 480px !important;
+  overflow: hidden !important;
+  transform: scale(0.95);
+  transition: transform 0.2s ease;
+}
+
+.modal-backdrop.show .modal-card {
+  transform: scale(1);
+}
+
+.modal-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 1.25rem 1.5rem !important;
+  border-bottom: 1px solid var(--border) !important;
+  background-color: var(--background) !important;
+}
+
+.modal-close-btn {
+  background: transparent !important;
+  border: none !important;
+  font-size: 1.5rem !important;
+  line-height: 1 !important;
+  color: var(--muted-foreground) !important;
+  cursor: pointer !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: var(--radius) !important;
+  transition: color 0.15s ease, background-color 0.15s ease !important;
+}
+
+.modal-close-btn:hover {
+  color: var(--foreground) !important;
+  background-color: var(--accent) !important;
+}
+
+.modal-body {
+  padding: 1.5rem !important;
+}
+
+.modal-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 0.75rem !important;
+  padding: 1rem 1.5rem !important;
+  border-top: 1px solid var(--border) !important;
+  background-color: var(--muted) !important;
+}
+
+
+
+

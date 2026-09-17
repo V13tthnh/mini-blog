@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Hồ sơ @{{ profile_user.username }} // Mini Blog ANM{% endblock %}
+
+{% block content %}
+<div style="max-width: 580px; margin: 2rem auto;">
+    {% if show_demo_notes %}
+        <div class="vuln-banner">
+            <div class="vuln-banner-header">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                PENTEST SPEC // IDOR (INSECURE DIRECT OBJECT REFERENCE)
+            </div>
+            <div style="line-height: 1.6;">
+                • <strong>IDOR Test</strong>: Thay đổi tham số <code>?user_id=X</code> trên URL để xem hoặc sửa hồ sơ người khác.<br>
+                • <strong>Patched Mode</strong>: Kiểm tra quyền truy cập Session, trả về <code>403 Forbidden</code> nếu truy cập trái phép.
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="card" style="padding: 2.25rem; text-align: center;">
+        <div style="position: relative; display: inline-block; margin-bottom: 1rem;">
+            <img src="{{ profile_user.avatar_url or '/static/uploads/default-avatar.svg' }}" class="avatar-lg" alt="avatar">
+        </div>
+
+        <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--foreground); margin-bottom: 0.35rem;">
+            {{ profile_user.username }}
+        </h2>
+        
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;">
+            <span class="badge badge-secondary font-mono">
+                ROLE: {{ profile_user.role | upper }}
+            </span>
+            <span class="badge badge-outline font-mono">
+                USER_ID: #{{ profile_user.id }}
+            </span>
+        </div>
+
+        <p style="color: var(--muted-foreground); margin-bottom: 2rem; font-size: 0.95rem; font-style: italic; background-color: var(--muted); padding: 0.75rem 1rem; border-radius: var(--radius); border: 1px solid var(--border);">
+            "{{ profile_user.bio or 'Chưa có tiểu sử.' }}"
+        </p>
+
+        <!-- Form Update Profile -->
+        <div style="border-top: 1px solid var(--border); padding-top: 1.75rem; text-align: left;">
+            <h4 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--foreground); display: flex; align-items: center; gap: 0.5rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Cập nhật hồ sơ
+            </h4>
+            
+            <form action="/profile/update" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="target_user_id" value="{{ profile_user.id }}">
+                
+                {% if mode == 'patched' and csrf_token %}
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                {% endif %}
+
+                <div class="form-group">
+                    <label class="form-label">Cập nhật Tiểu sử (Bio)</label>
+                    <input type="text" name="bio" class="form-control" value="{{ profile_user.bio or '' }}">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="form-label">Đổi Ảnh Đại Diện (Upload Test)</label>
+                    <input type="file" name="avatar" class="form-control">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Lưu Thay Đổi
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

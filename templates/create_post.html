@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Đăng bài mới // Mini Blog ANM{% endblock %}
+
+{% block content %}
+<div class="read-container">
+    {% if show_demo_notes %}
+        <div class="vuln-banner">
+            <div class="vuln-banner-header">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                PENTEST SPEC // CSRF & FILE UPLOAD & XSS
+            </div>
+            <div style="line-height: 1.6;">
+                • <strong>Missing CSRF</strong>: Vulnerable Mode không tạo Token xác thực CSRF.<br>
+                • <strong>Path Traversal / Arbitrary Upload</strong>: Form upload đính kèm file tùy ý.<br>
+                • <strong>Stored XSS</strong>: Nội dung bài viết cho phép chèn script JS.
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="card" style="padding: 2.25rem;">
+        <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 1.75rem; color: var(--foreground); display: flex; align-items: center; gap: 0.5rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Tạo bài viết mới
+        </h2>
+        
+        <form action="/post/create" method="POST" enctype="multipart/form-data">
+            {% if mode == 'patched' and csrf_token %}
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            {% endif %}
+
+            <div class="form-group">
+                <label class="form-label">Tiêu đề bài viết <span style="color: red"> *</span></label>
+                <input type="text" name="title" class="form-control" placeholder="Nhập tiêu đề bài viết..." required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Danh mục bài viết <span style="color: red"> *</span></label>
+                <select name="category_id" class="form-control" required>
+                    {% if categories %}
+                        {% for cat in categories %}
+                            <option value="{{ cat.id }}">{{ cat.name }}</option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Thẻ phân loại</label>
+                <input type="text" name="tags_input" class="form-control" placeholder="Nhập các tag phân cách bởi dấu phẩy (vd: OWASP, SQLi, Pentest)">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Nội dung bài viết <span style="color: red"> *</span></label>
+                <textarea name="content" class="form-control" placeholder="Viết nội dung bài viết tại đây..."></textarea>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.75rem;">
+                <label class="form-label">Hình ảnh đính kèm</label>
+                <input type="file" name="image" class="form-control">
+            </div>
+
+            <div style="display: flex; gap: 0.75rem;">
+                <button type="submit" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Đăng bài ngay
+                </button>
+                <a href="/" class="btn btn-outline">Hủy bỏ</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
