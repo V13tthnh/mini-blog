@@ -155,6 +155,14 @@ class PostService:
         return categories
 
     @staticmethod
+    def get_all_tags():
+        conn = get_db()
+        all_tags = conn.execute("SELECT * FROM tags ORDER BY name ASC").fetchall()
+        conn.close()
+        return all_tags
+
+
+    @staticmethod
     def create_post(
         user: dict,
         title: str,
@@ -273,19 +281,20 @@ class PostService:
         return True, None, post, comments
 
     @staticmethod
-    def get_edit_post_data(user: dict, post_id: int) -> tuple[bool, dict | None, list, str]:
+    def get_edit_post_data(user: dict, post_id: int) -> tuple[bool, dict | None, list, str, list]:
         conn = get_db()
         post_raw = conn.execute("SELECT * FROM posts WHERE id = ?", (post_id,)).fetchone()
         if not post_raw:
             conn.close()
-            return False, None, [], ""
+            return False, None, [], "", []
 
         post = dict(post_raw)
         if post["user_id"] != user["id"] and user.get("role") != "admin":
             conn.close()
-            return False, None, [], ""
+            return False, None, [], "", []
 
         categories = conn.execute("SELECT * FROM categories ORDER BY id ASC").fetchall()
+        all_tags = conn.execute("SELECT * FROM tags ORDER BY name ASC").fetchall()
         tags_raw = conn.execute("""
             SELECT tags.name
             FROM tags
@@ -295,7 +304,7 @@ class PostService:
         tags_str = ", ".join([t["name"] for t in tags_raw])
         conn.close()
 
-        return True, post, categories, tags_str
+        return True, post, categories, tags_str, all_tags
 
     @staticmethod
     def edit_post(

@@ -78,6 +78,7 @@ def create_post_page(request: Request):
     mode = request.app.state.mode
     show_demo_notes = getattr(request.app.state, "show_demo_notes", False)
     categories = PostService.get_categories()
+    all_tags = PostService.get_all_tags()
     csrf_token = generate_csrf_token(user["id"]) if mode == "patched" else ""
 
     return templates.TemplateResponse(
@@ -86,6 +87,7 @@ def create_post_page(request: Request):
         context={
             "current_user": user,
             "categories": categories,
+            "all_tags": all_tags,
             "csrf_token": csrf_token,
             "mode": mode,
             "show_demo_notes": show_demo_notes
@@ -205,7 +207,7 @@ def edit_post_page(request: Request, post_id: int):
     mode = request.app.state.mode
     show_demo_notes = getattr(request.app.state, "show_demo_notes", False)
 
-    success, post, categories, tags_str = PostService.get_edit_post_data(user, post_id)
+    success, post, categories, tags_str, all_tags = PostService.get_edit_post_data(user, post_id)
     if not success:
         return RedirectResponse(url=f"/post/{post_id}" if post else "/", status_code=303)
 
@@ -218,6 +220,7 @@ def edit_post_page(request: Request, post_id: int):
             "current_user": user,
             "post": post,
             "categories": categories,
+            "all_tags": all_tags,
             "tags_str": tags_str,
             "csrf_token": csrf_token,
             "mode": mode,

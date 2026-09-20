@@ -1288,6 +1288,178 @@ input::-webkit-contacts-auto-fill-button {
   background-color: var(--muted) !important;
 }
 
+/* ==========================================================================
+   CKEDITOR 5 CUSTOM STYLING (Shadcn Theme Integration)
+   ========================================================================== */
+.ck-editor__editable_inline {
+  min-height: 280px;
+  max-height: 600px;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--foreground);
+}
+
+.ck.ck-editor {
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-xs);
+}
+
+.ck.ck-editor__main>.ck-editor__editable {
+  border-color: var(--input) !important;
+  border-bottom-left-radius: var(--radius) !important;
+  border-bottom-right-radius: var(--radius) !important;
+  background-color: var(--background) !important;
+}
+
+.ck.ck-editor__main>.ck-editor__editable.ck-focused {
+  border-color: var(--ring) !important;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.1) !important;
+}
+
+.ck.ck-toolbar {
+  border-color: var(--input) !important;
+  background: var(--muted) !important;
+  border-top-left-radius: var(--radius) !important;
+  border-top-right-radius: var(--radius) !important;
+  padding: 0.35rem 0.5rem !important;
+}
+
+/* ==========================================================================
+   TAG PILL MULTI-SELECT COMPONENT (Max 4 Tags)
+   ========================================================================== */
+.tag-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.tag-input-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.625rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--input);
+  border-radius: var(--radius);
+  background-color: var(--background);
+  box-shadow: var(--shadow-xs);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  cursor: text;
+}
+
+.tag-input-box.focused {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.1);
+}
+
+.tag-pill-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: var(--tag-bg);
+  color: var(--tag-text);
+  border: 1px solid var(--tag-border);
+  border-radius: calc(var(--radius) - 2px);
+  padding: 0.2rem 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1;
+  animation: fadeInPill 0.15s ease-out;
+}
+
+@keyframes fadeInPill {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.tag-pill-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--tag-text);
+  opacity: 0.7;
+  transition: all 0.15s ease;
+}
+
+.tag-pill-remove:hover {
+  opacity: 1;
+  background-color: #c4b5fd;
+  color: #4c1d95;
+}
+
+.tag-text-input {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  flex: 1;
+  min-width: 120px;
+  padding: 0.2rem 0.1rem !important;
+  font-size: 0.875rem;
+  color: var(--foreground);
+}
+
+.tag-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 60;
+  background-color: var(--popover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: var(--shadow-md);
+  display: none;
+}
+
+.tag-dropdown.show {
+  display: block;
+}
+
+.tag-dropdown-item {
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  color: var(--foreground);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.12s ease;
+}
+
+.tag-dropdown-item:hover, .tag-dropdown-item.active {
+  background-color: var(--accent);
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.tag-dropdown-item.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: transparent !important;
+}
+
+.tag-counter-note {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  margin-top: 0.35rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+
 
 
 

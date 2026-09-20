@@ -53,13 +53,24 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">Thẻ phân loại</label>
-                <input type="text" name="tags_input" class="form-control" value="{{ tags_str }}" placeholder="Nhập các tag phân cách bởi dấu phẩy (vd: OWASP, SQLi, Pentest)">
+                <label class="form-label">Thẻ phân loại (Tối đa 4 tag)</label>
+                <div class="tag-select-wrapper" id="tagSelectWrapper" data-available-tags="{% if all_tags %}{% for t in all_tags %}{{ t.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}">
+                    <input type="hidden" name="tags_input" id="hiddenTagsInput" value="{{ tags_str }}">
+                    <div class="tag-input-box" id="tagInputBox">
+                        <div id="tagPillsContainer" style="display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center;"></div>
+                        <input type="text" id="tagTextInput" class="tag-text-input" placeholder="Chọn hoặc nhập tag mới..." autocomplete="off">
+                    </div>
+                    <div class="tag-dropdown" id="tagDropdown"></div>
+                </div>
+                <div class="tag-counter-note">
+                    <span>Gõ tag mới và nhấn Enter/Dấu phẩy hoặc chọn từ danh sách.</span>
+                    <span id="tagCountText" style="font-family: var(--font-mono); font-weight: 600; color: var(--muted-foreground);">0/4 tag</span>
+                </div>
             </div>
             
             <div class="form-group">
                 <label class="form-label">Nội dung bài viết <span style="color: red"> *</span></label>
-                <textarea name="content" class="form-control" style="min-height: 200px;" placeholder="Viết nội dung bài viết tại đây...">{{ post.content }}</textarea>
+                <textarea name="content" id="editor" class="form-control" style="min-height: 200px;" placeholder="Viết nội dung bài viết tại đây...">{{ post.content }}</textarea>
             </div>
 
             <div class="form-group" style="margin-bottom: 1.75rem;">
@@ -87,4 +98,184 @@
         </form>
     </div>
 </div>
+
+<!-- CKEditor 5 Script Integration -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.2.0/classic/ckeditor.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        ClassicEditor
+            .create(document.querySelector('#editor'), {
+                toolbar: [
+                    'heading', '|',
+                    'bold', 'italic', 'underline', 'strikethrough', 'code', '|',
+                    'link', 'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
+                    'undo', 'redo'
+                ]
+            })
+            .then(editor => {
+                const form = document.querySelector('form');
+                if (form) {
+                    form.addEventListener('submit', function() {
+                        document.querySelector('#editor').value = editor.getData();
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error initializing CKEditor:', error);
+            });
+
+        // Tag Pill Multiselect Integration
+        const wrapper = document.getElementById('tagSelectWrapper');
+        const inputBox = document.getElementById('tagInputBox');
+        const pillsContainer = document.getElementById('tagPillsContainer');
+        const textInput = document.getElementById('tagTextInput');
+        const dropdown = document.getElementById('tagDropdown');
+        const hiddenInput = document.getElementById('hiddenTagsInput');
+        const countText = document.getElementById('tagCountText');
+        const MAX_TAGS = 4;
+
+        const availableTags = (wrapper ? wrapper.getAttribute('data-available-tags') || '' : '')
+            .split(',')
+            .map(s => s.trim())
+            .filter(Boolean);
+        const initialTagsStr = hiddenInput ? hiddenInput.value : '';
+
+        let selectedTags = [];
+        if (initialTagsStr.trim()) {
+            selectedTags = initialTagsStr.split(',').map(s => s.trim().replace(/^#/, '')).filter(Boolean).slice(0, MAX_TAGS);
+        }
+
+        function renderTags() {
+            pillsContainer.innerHTML = '';
+            selectedTags.forEach((tag, idx) => {
+                const pill = document.createElement('span');
+                pill.className = 'tag-pill-item';
+                pill.innerHTML = `#${escapeHtml(tag)} <span class="tag-pill-remove" data-index="${idx}">&times;</span>`;
+                pillsContainer.appendChild(pill);
+            });
+
+            hiddenInput.value = selectedTags.join(', ');
+            countText.textContent = `${selectedTags.length}/${MAX_TAGS} tag`;
+
+            if (selectedTags.length >= MAX_TAGS) {
+                countText.style.color = 'var(--destructive)';
+                textInput.placeholder = 'Đã chọn tối đa 4 tag';
+                textInput.disabled = true;
+            } else {
+                countText.style.color = 'var(--muted-foreground)';
+                textInput.placeholder = selectedTags.length === 0 ? 'Chọn hoặc nhập tag mới...' : 'Thêm tag khác...';
+                textInput.disabled = false;
+            }
+        }
+
+        function addTag(name) {
+            name = name.trim().replace(/^#/, '');
+            if (!name) return;
+            if (selectedTags.length >= MAX_TAGS) return;
+            if (selectedTags.some(t => t.toLowerCase() === name.toLowerCase())) return;
+
+            selectedTags.push(name);
+            textInput.value = '';
+            renderTags();
+            hideDropdown();
+        }
+
+        function removeTag(index) {
+            selectedTags.splice(index, 1);
+            renderTags();
+            if (!textInput.disabled) {
+                textInput.focus();
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showDropdown(query = '') {
+            if (selectedTags.length >= MAX_TAGS) {
+                hideDropdown();
+                return;
+            }
+
+            const q = query.toLowerCase().trim();
+            const matches = availableTags.filter(t => 
+                !selectedTags.some(st => st.toLowerCase() === t.toLowerCase()) &&
+                (!q || t.toLowerCase().includes(q))
+            );
+
+            if (matches.length === 0) {
+                hideDropdown();
+                return;
+            }
+
+            dropdown.innerHTML = '';
+            matches.forEach(tag => {
+                const item = document.createElement('div');
+                item.className = 'tag-dropdown-item';
+                item.innerHTML = `<span>#${escapeHtml(tag)}</span> <span style="font-size: 0.725rem; color: var(--muted-foreground);">Chọn</span>`;
+                item.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    addTag(tag);
+                });
+                dropdown.appendChild(item);
+            });
+            dropdown.classList.add('show');
+        }
+
+        function hideDropdown() {
+            dropdown.classList.remove('show');
+        }
+
+        pillsContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('tag-pill-remove')) {
+                const idx = parseInt(e.target.getAttribute('data-index'), 10);
+                removeTag(idx);
+            }
+        });
+
+        textInput.addEventListener('focus', () => {
+            inputBox.classList.add('focused');
+            showDropdown(textInput.value);
+        });
+
+        textInput.addEventListener('blur', () => {
+            inputBox.classList.remove('focused');
+            setTimeout(hideDropdown, 200);
+        });
+
+        textInput.addEventListener('input', () => {
+            const val = textInput.value;
+            if (val.includes(',')) {
+                const parts = val.split(',');
+                parts.forEach(p => addTag(p));
+                textInput.value = '';
+            } else {
+                showDropdown(val);
+            }
+        });
+
+        textInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (textInput.value.trim()) {
+                    addTag(textInput.value);
+                }
+            } else if (e.key === 'Backspace' && !textInput.value && selectedTags.length > 0) {
+                removeTag(selectedTags.length - 1);
+            }
+        });
+
+        inputBox.addEventListener('click', (e) => {
+            if (e.target.classList.contains('tag-pill-remove')) return;
+            if (!textInput.disabled) {
+                textInput.focus();
+            }
+        });
+
+        renderTags();
+    });
+</script>
 {% endblock %}
