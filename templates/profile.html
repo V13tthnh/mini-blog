@@ -35,9 +35,9 @@
             </span>
         </div>
 
-        <p style="color: var(--muted-foreground); margin-bottom: 2rem; font-size: 0.95rem; font-style: italic; background-color: var(--muted); padding: 0.75rem 1rem; border-radius: var(--radius); border: 1px solid var(--border);">
-            "{{ profile_user.bio or 'Chưa có tiểu sử.' }}"
-        </p>
+        <div style="color: var(--muted-foreground); margin-bottom: 2rem; font-size: 0.95rem; font-style: italic; background-color: var(--muted); padding: 0.75rem 1rem; border-radius: var(--radius); border: 1px solid var(--border);">
+            {{ (profile_user.bio or 'Chưa có tiểu sử.') | safe }}
+        </div>
 
         <!-- Form Update Profile -->
         <div style="border-top: 1px solid var(--border); padding-top: 1.75rem; text-align: left;">

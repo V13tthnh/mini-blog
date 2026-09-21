@@ -48,6 +48,9 @@ class ProfileService:
             if not verify_csrf_token(csrf_token, current_user["id"]):
                 return False, "csrf_error", 303
 
+            from app.utils.sanitize import clean_html
+            bio = clean_html(bio)
+
         upload_success, avatar_url, err_type = save_uploaded_file(avatar, mode)
         if not upload_success:
             return False, "file_type_error", 303

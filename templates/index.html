@@ -6,20 +6,6 @@
 <div class="home-grid">
     <!-- CỘT TRÁI (LỚN HƠN): Hero + Search + Post List -->
     <div class="main-content">
-        <!-- Hero Statement Section -->
-        <!-- <div class="hero-section">
-            <div class="hero-badge-wrap">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                <span>OWASP Top 10 Security Lab</span>
-            </div>
-            <h1 class="hero-statement">
-                Nền tảng kiểm thử & phân tích <span class="highlight">bảo mật ứng dụng web</span>
-            </h1>
-            <p class="hero-subtitle">
-                Ứng dụng thử nghiệm tích hợp 6 lỗ hổng bảo mật tiêu biểu theo OWASP Top 10 phục vụ công tác kiểm thử xâm nhập và kiểm chứng hiệu quả cơ chế vá.
-            </p>
-        </div> -->
-
         <!-- Technical Spec Banner (Chỉ hiển thị khi Admin bật) -->
         {% if show_demo_notes %}
             <div class="vuln-banner">
@@ -34,26 +20,22 @@
             </div>
         {% endif %}
 
-        <!-- Search Form (HTMX Live Search with Icon) -->
-        <form action="/search" method="GET" class="search-form">
+        <!-- Search Form (Chỉ trigger khi Submit nút Tìm kiếm hoặc bấm Enter) -->
+        <form action="/search" 
+              method="GET" 
+              class="search-form"
+              hx-get="/search"
+              hx-target="#post-feed"
+              hx-push-url="true">
             <div class="search-input-wrapper">
                 <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 <input type="text" 
                        name="q" 
                        class="form-control" 
                        placeholder="Tìm kiếm bài viết" 
-                       value="{{ query or '' }}"
-                       hx-get="/search"
-                       hx-trigger="keyup changed delay:300ms, search"
-                       hx-target="#post-feed"
-                       hx-push-url="true">
+                       value="{{ query or '' }}">
             </div>
-            <button type="submit" 
-                    hx-get="/search" 
-                    hx-target="#post-feed" 
-                    hx-include="[name='q']"
-                    hx-push-url="true" 
-                    class="btn btn-primary">
+            <button type="submit" class="btn btn-primary">
                 Tìm kiếm
             </button>
         </form>
@@ -62,7 +44,7 @@
         {% include "partials/post_list.html" %}
     </div>
 
-    <!-- CỘT PHẢI (NHỎ HƠN): Sidebar Tất Cả Danh Mục & Tất Cả Tags -->
+    <!-- CỘT PHẢI: Sidebar Tất Cả Danh Mục & Tất Cả Tags -->
     <aside class="sidebar">
         <!-- Widget: Tất Cả Danh Mục (HTMX Instant Filter) -->
         <div class="sidebar-widget">

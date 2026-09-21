@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Unrestricted File Upload Demo</title>
+    <style>
+        body { font-family: sans-serif; background: #fef2f2; color: #991b1b; padding: 2rem; text-align: center; }
+        .box { background: white; padding: 2rem; border-radius: 8px; border: 1px solid #fecaca; display: inline-block; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Unrestricted File Upload Payload Triggered</h2>
+        <p>File HTML này được tải lên thành công do không kiểm chứng định dạng tập tin đầu vào (Improper Input Validation).</p>
+    </div>
+    <script>
+        alert("Alert Demo: Lỗ hổng Unrestricted File Upload (Tải file HTML/JS) đã được kích hoạt thành công!");
+    </script>
+</body>
+</html>

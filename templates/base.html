@@ -10,7 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css?v=1.6">
     <!-- HTMX CDN Library -->
+    {% if mode == 'patched' %}
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC=" crossorigin="anonymous"></script>
+    {% else %}
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    {% endif %}
     <!-- Main Application Client JS -->
     <script src="/static/js/main.js?v=1.6" defer></script>
 </head>

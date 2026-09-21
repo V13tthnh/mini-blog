@@ -11,7 +11,7 @@ from fastapi.responses import RedirectResponse
 from contextlib import asynccontextmanager
 
 from database import init_db
-from app.routes import auth, posts, profile, admin
+from app.routes import auth, posts, profile, admin, files
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -30,12 +30,30 @@ app.state.mode = os.getenv("APP_MODE", "vulnerable").lower()
 # Cấu hình ẩn/hiển thị ghi chú Pentest & Nút Chế độ trên giao diện (Mặc định: Ẩn)
 app.state.show_demo_notes = False
 
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    mode = getattr(request.app.state, "mode", "vulnerable")
+    if mode == "patched":
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+            "font-src 'self' https://fonts.gstatic.com; "
+            "img-src 'self' data: https:;"
+        )
+    return response
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(auth.router)
 app.include_router(posts.router)
 app.include_router(profile.router)
 app.include_router(admin.router)
+app.include_router(files.router)
 
 @app.get("/toggle-mode")
 def toggle_mode(request: Request):

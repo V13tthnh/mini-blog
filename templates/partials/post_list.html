@@ -1,4 +1,30 @@
 <div id="post-feed">
+    {% if mode == "vulnerable" and query %}
+        <div class="dvwa-raw-box">
+            {% if sqli_error %}
+                <div class="dvwa-raw-error">
+                    <strong>[SQL Error Output]:</strong> {{ sqli_error }}
+                </div>
+            {% endif %}
+
+            {% if raw_results %}
+                {% for item in raw_results %}
+    <div class="dvwa-raw-item">
+        {%- for key, val in item.items() %}
+            {%- if val is not none and key != 'tags' %}
+            <div class="dvwa-raw-line"><span class="dvwa-raw-label">{{ key }}:</span> {{ val }}</div>
+            {%- endif %}
+        {%- endfor %}
+    </div>
+{% endfor %}
+            {% elif not sqli_error %}
+                <div class="dvwa-raw-item" style="color: var(--muted-foreground);">
+                    <em>Không có dữ liệu thô trả về từ câu truy vấn SQL.</em>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
         <h2 style="font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted-foreground);">
             DANH SÁCH BÀI VIẾT ({% if posts %}{{ posts|length }}{% else %}0{% endif %})

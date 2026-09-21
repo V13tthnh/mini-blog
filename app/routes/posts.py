@@ -51,7 +51,14 @@ def search_posts(request: Request, q: str = ""):
         return templates.TemplateResponse(
             request=request,
             name="partials/post_list.html",
-            context={"posts": data["posts"], "show_demo_notes": show_demo_notes}
+            context={
+                "posts": data["posts"],
+                "raw_results": data.get("raw_results", []),
+                "sqli_error": data.get("sqli_error"),
+                "query": q,
+                "mode": mode,
+                "show_demo_notes": show_demo_notes
+            }
         )
 
     return templates.TemplateResponse(
@@ -60,6 +67,8 @@ def search_posts(request: Request, q: str = ""):
         context={
             "current_user": user,
             "posts": data["posts"],
+            "raw_results": data.get("raw_results", []),
+            "sqli_error": data.get("sqli_error"),
             "recommended_posts": data["recommended_posts"],
             "categories": data["categories"],
             "all_tags": data["all_tags"],

@@ -12,6 +12,12 @@ venv/
 ENV/
 env/
 
+# Secrets and private keys
+*.pem
+*.key
+.env
+.env.local
+
 # Database files & local storage
 *.db
 *.sqlite3
@@ -21,3 +27,4 @@ storage/*.db
 .idea/
 .vscode/
 .DS_Store
+

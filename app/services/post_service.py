@@ -97,6 +97,9 @@ class PostService:
         categories = conn.execute("SELECT * FROM categories ORDER BY id ASC").fetchall()
         all_tags = conn.execute("SELECT * FROM tags ORDER BY name ASC").fetchall()
 
+        raw_results = []
+        sqli_error = None
+
         if mode == "vulnerable":
             raw_sql = f"""
                 SELECT posts.id, posts.title, posts.content, posts.image_url, posts.created_at, posts.user_id,
@@ -109,8 +112,10 @@ class PostService:
             """
             try:
                 posts_raw = conn.execute(raw_sql).fetchall()
+                raw_results = [dict(r) for r in posts_raw]
             except Exception as e:
                 posts_raw = []
+                sqli_error = str(e)
                 print(f"[SQLi Error Demo]: {e}")
         else:
             safe_sql = """
@@ -142,6 +147,8 @@ class PostService:
 
         return {
             "posts": posts,
+            "raw_results": raw_results,
+            "sqli_error": sqli_error,
             "recommended_posts": recommended_posts,
             "categories": categories,
             "all_tags": all_tags

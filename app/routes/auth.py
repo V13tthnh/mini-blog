@@ -28,8 +28,8 @@ def login_page(request: Request):
 @router.post("/login")
 def login_submit(
     request: Request,
-    email: str = Form(...),
-    password: str = Form(...)
+    email: str = Form(""),
+    password: str = Form("")
 ):
     mode = request.app.state.mode
     client_ip = request.client.host if request.client else "127.0.0.1"
@@ -50,7 +50,11 @@ def login_submit(
         )
 
     response = RedirectResponse(url="/", status_code=303)
-    response.set_cookie(key=COOKIE_NAME, value=result, httponly=True)
+    if mode == "patched":
+        response.set_cookie(key=COOKIE_NAME, value=result, httponly=True, secure=True, samesite="lax")
+    else:
+        # Vulnerable Mode: Cookie thiếu cờ Secure và SameSite
+        response.set_cookie(key=COOKIE_NAME, value=result, httponly=False)
     return response
 
 @router.get("/register", response_class=HTMLResponse)

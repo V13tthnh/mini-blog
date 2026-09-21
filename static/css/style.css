@@ -1458,8 +1458,53 @@ input::-webkit-contacts-auto-fill-button {
   align-items: center;
 }
 
+/* ==========================================================================
+   DVWA STYLE RAW SQL OUTPUT
+   ========================================================================== */
+.dvwa-raw-box {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 0;
+  padding: 0.25rem 0;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  box-shadow: none;
+}
 
+/* Reset mạnh mọi phần tử con để không bị style global (prose, reset, v.v.) ghi đè */
+.dvwa-raw-box,
+.dvwa-raw-box * {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.35 !important;
+  box-sizing: border-box;
+}
 
+.dvwa-raw-item {
+  color: #dc2626; /* DVWA Red text color */
+  white-space: pre-wrap;
+  word-break: break-word;
+  display: block;
+}
 
+.dvwa-raw-line {
+  display: block;
+  margin-bottom: 1px !important; /* khoảng cách y hệt DVWA, gần như dính sát */
+}
 
+.dvwa-raw-label {
+  font-weight: 700;
+  color: #dc2626;
+}
 
+.dvwa-raw-error {
+  color: #b91c1c;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  margin-bottom: 1rem;
+}

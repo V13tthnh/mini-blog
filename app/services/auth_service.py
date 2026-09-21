@@ -23,6 +23,27 @@ class AuthService:
 
         conn = get_db()
         email_clean = email.strip()
+
+        if mode == "vulnerable":
+            # Pure SQL concatenation vulnerability:
+            # Payload `' OR 1=1 --` turns query into:
+            # SELECT * FROM users WHERE email = '' OR 1=1 --' OR username = '...'
+            raw_sql = f"SELECT * FROM users WHERE email = '{email}' OR username = '{email}'"
+            print(f"[SQLi Login Debug]: {raw_sql}")
+            try:
+                user_raw = conn.execute(raw_sql).fetchone()
+            except Exception as e:
+                print(f"[SQLi Login Error Demo]: {e}")
+                user_raw = None
+            conn.close()
+
+            if not user_raw:
+                return False, "Mật khẩu hoặc Email đăng nhập không chính xác!", "invalid_credentials"
+
+            user = dict(user_raw)
+            token = create_session_token({"user_id": user["id"], "username": user["username"], "role": user["role"]})
+            return True, token, None
+
         user = conn.execute("SELECT * FROM users WHERE email = ? OR username = ?", (email_clean, email_clean)).fetchone()
         conn.close()
 
