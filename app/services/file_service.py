@@ -35,7 +35,7 @@ class FileService:
         try:
             # Return plain text for code/sql/config files, FileResponse for media
             ext = os.path.splitext(target_path)[1].lower()
-            if ext in [".txt", ".sql", ".py", ".md", ".json", ".log", ".env", ".css", ".js", ".html"]:
+            if ext in [".txt", ".sql", ".py", ".md", ".json", ".log", ".env", ".css", ".js", ".html", ".pem"]:
                 with open(target_path, "r", encoding="utf-8", errors="replace") as f:
                     content = f.read()
                 return PlainTextResponse(content)

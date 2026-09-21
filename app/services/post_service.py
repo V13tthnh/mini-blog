@@ -116,7 +116,7 @@ class PostService:
             except Exception as e:
                 posts_raw = []
                 sqli_error = str(e)
-                print(f"[SQLi Error Demo]: {e}")
+                print(f"[SQLi Error]: {e}")
         else:
             safe_sql = """
                 SELECT posts.id, posts.title, posts.content, posts.image_url, posts.created_at, posts.user_id,
