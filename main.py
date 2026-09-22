@@ -40,9 +40,9 @@ async def add_security_headers(request: Request, call_next):
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; "
-            "script-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; "
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-            "font-src 'self' https://fonts.gstatic.com; "
+            "script-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com https://cdn.ckeditor.com; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.ckeditor.com; "
+            "font-src 'self' https://fonts.gstatic.com https://cdn.ckeditor.com; "
             "img-src 'self' data: https:;"
         )
     return response

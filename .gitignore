@@ -28,3 +28,5 @@ storage/*.db
 .vscode/
 .DS_Store
 
+# Temporary uploaded test files
+static/uploads/*.html

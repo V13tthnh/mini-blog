@@ -6,15 +6,12 @@ from app.utils.file_upload import save_uploaded_file
 class ProfileService:
     @staticmethod
     def get_profile_data(current_user: dict, target_user_id: int | None, mode: str) -> tuple[bool, dict | str, int]:
-        """
-        Retrieves profile user info with IDOR protection in patched mode.
-        Returns (success, profile_user_dict_or_error_message, status_code).
-        """
+
         target_id = target_user_id if target_user_id is not None else current_user["id"]
 
         if mode == "patched":
             if target_id != current_user["id"] and current_user["role"] != "admin":
-                return False, "Lỗi 403 Forbidden: Bạn không có quyền truy cập hồ sơ của người dùng khác (Chống IDOR)!", 403
+                return False, "Lỗi 403 Forbidden: Bạn không có quyền truy cập hồ sơ của người dùng khác", 403
 
         conn = get_db()
         profile_user = conn.execute(
@@ -37,10 +34,7 @@ class ProfileService:
         avatar: UploadFile | None,
         mode: str
     ) -> tuple[bool, str | None, int]:
-        """
-        Updates profile info & avatar image with IDOR & CSRF security checks.
-        Returns (success, error_msg_if_failed, status_code).
-        """
+        
         if mode == "patched":
             if target_user_id != current_user["id"] and current_user["role"] != "admin":
                 return False, "Lỗi 403 Forbidden: Không thể chỉnh sửa hồ sơ người khác!", 403
