@@ -118,6 +118,10 @@ class PostService:
                 posts_raw = []
                 sqli_error = str(e)
                 print(f"[SQLi Error]: {e}")
+                try:
+                    conn._conn.rollback()
+                except Exception:
+                    pass
         else:
             safe_sql = """
                 SELECT posts.id, posts.title, posts.content, posts.image_url, posts.created_at, posts.user_id,
