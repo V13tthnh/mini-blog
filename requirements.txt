@@ -79,6 +79,8 @@ mdurl==0.1.2
     # via markdown-it-py
 packaging==26.3
     # via limits
+psycopg2-binary==2.9.13
+    # via anm
 pydantic==2.13.5
     # via
     #   fastapi
