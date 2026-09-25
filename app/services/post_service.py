@@ -102,14 +102,12 @@ class PostService:
 
         if mode == "vulnerable":
             raw_sql = f"""
-                SELECT * FROM (
-                    SELECT posts.id, posts.title, posts.content, posts.image_url, posts.created_at, posts.user_id,
-                           users.username, users.avatar_url, categories.name as category_name, categories.slug as category_slug
-                    FROM posts
-                    JOIN users ON posts.user_id = users.id
-                    LEFT JOIN categories ON posts.category_id = categories.id
-                    WHERE posts.title LIKE '%{q}%' OR posts.content LIKE '%{q}%'
-                ) AS search_results ORDER BY created_at DESC
+                SELECT posts.id, posts.title, posts.content, posts.image_url, posts.created_at, posts.user_id,
+                       users.username, users.avatar_url, categories.name as category_name, categories.slug as category_slug
+                FROM posts
+                JOIN users ON posts.user_id = users.id
+                LEFT JOIN categories ON posts.category_id = categories.id
+                WHERE posts.title LIKE '%{q}%' OR posts.content LIKE '%{q}%'
             """
             try:
                 posts_raw = conn.execute(raw_sql).fetchall()
