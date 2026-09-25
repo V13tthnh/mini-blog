@@ -1515,9 +1515,16 @@ input::-webkit-contacts-auto-fill-button {
 .form-control.is-invalid,
 input.is-invalid,
 select.is-invalid,
-textarea.is-invalid {
+textarea.is-invalid,
+.tag-input-box.is-invalid,
+.ck.ck-editor.is-invalid {
   border-color: var(--destructive) !important;
   box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.18) !important;
+  background-color: #fff5f5 !important;
+}
+
+.ck.ck-editor.is-invalid .ck-editor__main>.ck-editor__editable {
+  border-color: var(--destructive) !important;
   background-color: #fff5f5 !important;
 }
 

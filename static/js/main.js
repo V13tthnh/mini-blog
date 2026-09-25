@@ -400,6 +400,11 @@ function initClientSideValidation() {
     form.querySelectorAll('.is-invalid').forEach(function (el) {
       el.classList.remove('is-invalid');
     });
+    const ckEditor = form.querySelector('.ck.ck-editor');
+    if (ckEditor) ckEditor.classList.remove('is-invalid');
+    const tagBox = form.querySelector('.tag-input-box');
+    if (tagBox) tagBox.classList.remove('is-invalid');
+
     form.querySelectorAll('.form-error-msg').forEach(function (el) {
       el.remove();
     });
@@ -409,14 +414,24 @@ function initClientSideValidation() {
     if (!input) return;
     input.classList.add('is-invalid');
 
-    const parent = input.closest('.form-group') || input.parentElement;
+    // Special styling for CKEditor hidden textarea & Tag multiselect box
+    if (input.id === 'editor' || input.name === 'content') {
+      const ckEditor = input.closest('.form-group')?.querySelector('.ck.ck-editor');
+      if (ckEditor) ckEditor.classList.add('is-invalid');
+    }
+    if (input.classList.contains('tag-text-input')) {
+      const tagBox = input.closest('.tag-input-box');
+      if (tagBox) tagBox.classList.add('is-invalid');
+    }
+
+    const parent = input.closest('.form-group') || input.closest('tr') || input.parentElement;
     if (!parent) return;
 
     let errorEl = parent.querySelector('.form-error-msg');
     if (!errorEl) {
       errorEl = document.createElement('div');
       errorEl.className = 'form-error-msg';
-      errorEl.style.cssText = 'color: #dc2626 !important; font-size: 0.75rem !important; font-weight: 500 !important; margin-top: 0.3rem !important; display: flex !important; align-items: center !important; gap: 0.35rem !important; line-height: 1.35 !important;';
+      errorEl.style.cssText = 'color: #dc2626 !important; font-size: 0.75rem !important; font-weight: 500 !important; margin-top: 0.35rem !important; display: flex !important; align-items: center !important; gap: 0.35rem !important; line-height: 1.35 !important; width: 100% !important; flex-basis: 100% !important;';
       errorEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px !important; height: 12px !important; flex-shrink: 0 !important; stroke: #dc2626 !important;"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg> <span style="color: #dc2626 !important; font-size: 0.75rem !important; font-weight: 500 !important;"></span>';
       errorEl.querySelector('span').textContent = message;
 
@@ -473,10 +488,16 @@ function initClientSideValidation() {
       }
     }
 
-    const action = (form.getAttribute('action') || '').toLowerCase();
+    let actionPath = '';
+    try {
+      const rawAction = form.getAttribute('action') || form.action || '';
+      actionPath = new URL(rawAction, window.location.origin).pathname.toLowerCase();
+    } catch (err) {
+      actionPath = (form.getAttribute('action') || form.action || '').toLowerCase();
+    }
 
     // 1. Login Form (/login)
-    if (action.endsWith('/login')) {
+    if (actionPath.endsWith('/login')) {
       const emailInput = form.querySelector('input[name="email"]');
       const passInput = form.querySelector('input[name="password"]');
 
@@ -499,7 +520,7 @@ function initClientSideValidation() {
     }
 
     // 2. Register Form (/register)
-    else if (action.endsWith('/register')) {
+    else if (actionPath.endsWith('/register')) {
       const emailInput = form.querySelector('input[name="email"]');
       const passInput = form.querySelector('input[name="password"]');
       const confirmInput = form.querySelector('input[name="confirm_password"]');
@@ -531,7 +552,7 @@ function initClientSideValidation() {
     }
 
     // 3. Profile Update Form (/profile/update)
-    else if (action.endsWith('/profile/update')) {
+    else if (actionPath.endsWith('/profile/update')) {
       const bioInput = form.querySelector('input[name="bio"]');
       const fileInput = form.querySelector('input[name="avatar"]');
 
@@ -550,7 +571,7 @@ function initClientSideValidation() {
     }
 
     // 4 & 5. Create / Edit Post Forms (/post/create or /post/edit/*)
-    else if (action.includes('/post/create') || action.includes('/post/edit/')) {
+    else if (actionPath.includes('/post/create') || actionPath.includes('/post/edit/')) {
       const titleInput = form.querySelector('input[name="title"]');
       const categorySelect = form.querySelector('select[name="category_id"]');
       const contentTextarea = form.querySelector('textarea[name="content"]');
@@ -577,7 +598,7 @@ function initClientSideValidation() {
         if (window.editorInstance) {
           contentTextarea.value = window.editorInstance.getData();
         }
-        const textContent = contentTextarea.value.replace(/<[^>]*>/g, '').trim();
+        const textContent = contentTextarea.value.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
         if (!textContent && !contentTextarea.value.trim()) {
           invalidate(contentTextarea, 'Nội dung bài viết không được để trống.');
         }
@@ -594,7 +615,7 @@ function initClientSideValidation() {
     }
 
     // 6. Comment Form (/comment)
-    else if (action.includes('/comment')) {
+    else if (actionPath.includes('/comment')) {
       const commentTextarea = form.querySelector('textarea[name="content"]');
       if (commentTextarea) {
         const val = commentTextarea.value.trim();
@@ -607,7 +628,7 @@ function initClientSideValidation() {
     }
 
     // 7 & 8. Admin Add / Edit Category Forms (/admin/category/*)
-    else if (action.includes('/admin/category/')) {
+    else if (actionPath.includes('/admin/category/')) {
       const nameInput = form.querySelector('input[name="name"]');
       const slugInput = form.querySelector('input[name="slug"]');
 
@@ -629,7 +650,7 @@ function initClientSideValidation() {
     }
 
     // 9 & 10. Admin Add / Edit Tag Forms (/admin/tag/*)
-    else if (action.includes('/admin/tag/')) {
+    else if (actionPath.includes('/admin/tag/')) {
       const nameInput = form.querySelector('input[name="name"]');
       const slugInput = form.querySelector('input[name="slug"]');
 
@@ -651,7 +672,7 @@ function initClientSideValidation() {
     }
 
     // 11. Admin Edit User Form (#editUserForm or action includes /admin/user/*/edit)
-    else if (form.id === 'editUserForm' || action.includes('/edit')) {
+    else if (form.id === 'editUserForm' || actionPath.includes('/admin/user/')) {
       const usernameInput = form.querySelector('input[name="username"]');
       const emailInput = form.querySelector('input[name="email"]');
 
@@ -687,23 +708,52 @@ function initClientSideValidation() {
       e.preventDefault();
       e.stopPropagation();
       if (firstInvalidInput) {
-        firstInvalidInput.focus();
-        firstInvalidInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if ((firstInvalidInput.id === 'editor' || firstInvalidInput.name === 'content') && window.editorInstance) {
+          try {
+            window.editorInstance.editing.view.focus();
+          } catch (err) {}
+          const ckEditor = firstInvalidInput.closest('.form-group')?.querySelector('.ck.ck-editor');
+          if (ckEditor) ckEditor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          try {
+            firstInvalidInput.focus();
+          } catch (err) {}
+          firstInvalidInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
       }
     }
   }, true);
 
-  // Live input error clearing on user typing
-  document.addEventListener('input', function (e) {
-    const input = e.target;
-    if (input && input.classList && input.classList.contains('is-invalid')) {
+  // Live input error clearing on user typing & select/file change
+  function clearInputError(input) {
+    if (!input || !input.classList) return;
+
+    if (input.classList.contains('is-invalid')) {
       input.classList.remove('is-invalid');
-      const parent = input.closest('.form-group') || input.parentElement;
+
+      if (input.id === 'editor' || input.name === 'content') {
+        const ckEditor = input.closest('.form-group')?.querySelector('.ck.ck-editor');
+        if (ckEditor) ckEditor.classList.remove('is-invalid');
+      }
+      if (input.classList.contains('tag-text-input')) {
+        const tagBox = input.closest('.tag-input-box');
+        if (tagBox) tagBox.classList.remove('is-invalid');
+      }
+
+      const parent = input.closest('.form-group') || input.closest('tr') || input.parentElement;
       if (parent) {
         const err = parent.querySelector('.form-error-msg');
         if (err) err.remove();
       }
     }
+  }
+
+  document.addEventListener('input', function (e) {
+    clearInputError(e.target);
+  });
+
+  document.addEventListener('change', function (e) {
+    clearInputError(e.target);
   });
 }
 

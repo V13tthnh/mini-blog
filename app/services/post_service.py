@@ -102,13 +102,14 @@ class PostService:
 
         if mode == "vulnerable":
             raw_sql = f"""
-                SELECT posts.id, posts.title, posts.content, posts.image_url, posts.created_at, posts.user_id,
-                       users.username, users.avatar_url, categories.name as category_name, categories.slug as category_slug
-                FROM posts
-                JOIN users ON posts.user_id = users.id
-                LEFT JOIN categories ON posts.category_id = categories.id
-                WHERE posts.title LIKE '%{q}%' OR posts.content LIKE '%{q}%'
-                ORDER BY posts.created_at DESC
+                SELECT * FROM (
+                    SELECT posts.id, posts.title, posts.content, posts.image_url, posts.created_at, posts.user_id,
+                           users.username, users.avatar_url, categories.name as category_name, categories.slug as category_slug
+                    FROM posts
+                    JOIN users ON posts.user_id = users.id
+                    LEFT JOIN categories ON posts.category_id = categories.id
+                    WHERE posts.title LIKE '%{q}%' OR posts.content LIKE '%{q}%'
+                ) AS search_results ORDER BY created_at DESC
             """
             try:
                 posts_raw = conn.execute(raw_sql).fetchall()
@@ -183,13 +184,27 @@ class PostService:
         if mode == "patched":
             if not verify_csrf_token(csrf_token, user["id"]):
                 categories = PostService.get_categories()
+                all_tags = PostService.get_all_tags()
                 return False, {
                     "categories": categories,
+                    "all_tags": all_tags,
                     "msg": "Lỗi xác thực 400: CSRF Token không hợp lệ!",
+                    "msg_type": "error"
+                }, 400
+            if not title.strip() or not content.strip():
+                categories = PostService.get_categories()
+                all_tags = PostService.get_all_tags()
+                return False, {
+                    "categories": categories,
+                    "all_tags": all_tags,
+                    "msg": "Vui lòng nhập đầy đủ tiêu đề và nội dung bài viết!",
                     "msg_type": "error"
                 }, 400
             content = clean_html(content)
             title = clean_html(title)
+
+        title = title.strip() or "(Chưa có tiêu đề)"
+        content = content.strip() or "(Chưa có nội dung)"
 
         upload_success, image_url, err_msg = save_uploaded_file(image, mode)
         if not upload_success:
@@ -339,17 +354,35 @@ class PostService:
         if mode == "patched":
             if not verify_csrf_token(csrf_token, user["id"]):
                 categories = conn.execute("SELECT * FROM categories ORDER BY id ASC").fetchall()
+                all_tags = conn.execute("SELECT * FROM tags ORDER BY name ASC").fetchall()
                 conn.close()
                 return False, {
                     "post": post,
                     "categories": categories,
+                    "all_tags": all_tags,
                     "tags_str": tags_input,
                     "msg": "Lỗi xác thực 400: CSRF Token không hợp lệ!",
                     "msg_type": "error"
                 }, 400
 
+            if not title.strip() or not content.strip():
+                categories = conn.execute("SELECT * FROM categories ORDER BY id ASC").fetchall()
+                all_tags = conn.execute("SELECT * FROM tags ORDER BY name ASC").fetchall()
+                conn.close()
+                return False, {
+                    "post": post,
+                    "categories": categories,
+                    "all_tags": all_tags,
+                    "tags_str": tags_input,
+                    "msg": "Vui lòng nhập đầy đủ tiêu đề và nội dung bài viết!",
+                    "msg_type": "error"
+                }, 400
+
             content = clean_html(content)
             title = clean_html(title)
+
+        title = title.strip() or "(Chưa có tiêu đề)"
+        content = content.strip() or "(Chưa có nội dung)"
 
         image_url = post.get("image_url")
         if image and image.filename:

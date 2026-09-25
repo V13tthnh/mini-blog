@@ -10,6 +10,7 @@
     {% if current_user %}
         <form action="/post/{{ post.id }}/comment" 
               method="POST" 
+              novalidate
               hx-post="/post/{{ post.id }}/comment" 
               hx-target="#comment-section" 
               hx-swap="outerHTML" 

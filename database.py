@@ -21,8 +21,8 @@ class PostgresCursorWrapper:
 
         is_insert = query.strip().upper().startswith("INSERT")
 
-        # Special handling for post creation lastrowid in Postgres if RETURNING id is needed
-        if is_insert and "RETURNING" not in query.upper():
+        # Append RETURNING id ONLY for tables that have an 'id' column (not post_tags)
+        if is_insert and "RETURNING" not in query.upper() and "INTO POST_TAGS" not in query.upper():
             query += " RETURNING id"
 
         if params is not None:
@@ -33,7 +33,7 @@ class PostgresCursorWrapper:
         else:
             self._cursor.execute(query)
 
-        # Capture lastrowid ONLY for INSERT queries
+        # Capture lastrowid ONLY for INSERT queries on tables with 'id' column
         if is_insert and self._cursor.description:
             col_names = [desc[0] for desc in self._cursor.description]
             if "id" in col_names:

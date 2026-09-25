@@ -13,7 +13,7 @@
         </div>
 
         <!-- Form Add Tag -->
-        <form action="/admin/tag/add" method="POST" style="margin-bottom: 1.25rem; background-color: var(--muted); padding: 1.25rem; border-radius: var(--radius); border: 1px solid var(--border);">
+        <form action="/admin/tag/add" method="POST" novalidate style="margin-bottom: 1.25rem; background-color: var(--muted); padding: 1.25rem; border-radius: var(--radius); border: 1px solid var(--border);">
             <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
                 <input type="text" name="name" class="form-control" placeholder="Tên thẻ tag mới..." required style="flex: 2; min-width: 180px;">
                 <input type="text" name="slug" class="form-control" placeholder="Slug (Tùy chọn)" style="flex: 2; min-width: 160px;">
@@ -73,7 +73,7 @@
                         <!-- Inline Table Row Edit Form -->
                         <tr id="tag-row-edit-{{ t.id }}" class="tag-row-edit" style="display: none; background-color: var(--muted);">
                             <td colspan="5" style="padding: 0.65rem 1rem;">
-                                <form action="/admin/tag/edit/{{ t.id }}" method="POST" style="display: flex; gap: 0.6rem; align-items: center; width: 100%; flex-wrap: nowrap;">
+                                <form action="/admin/tag/edit/{{ t.id }}" method="POST" novalidate style="display: flex; gap: 0.6rem; align-items: center; width: 100%; flex-wrap: wrap;">
                                     <span class="font-mono" style="font-weight: 600; color: #2563eb; width: 45px; flex-shrink: 0;">#{{ t.id }}</span>
                                     <input type="text" name="name" class="form-control" value="{{ t.name }}" required placeholder="Tên thẻ tag..." style="flex: 2; height: 2.15rem; font-size: 0.85rem; min-width: 120px;">
                                     <input type="text" name="slug" class="form-control" value="{{ t.slug or '' }}" placeholder="Slug..." style="flex: 2; height: 2.15rem; font-size: 0.85rem; min-width: 100px;">

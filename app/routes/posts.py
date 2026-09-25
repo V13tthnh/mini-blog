@@ -106,8 +106,8 @@ def create_post_page(request: Request):
 @router.post("/post/create")
 async def create_post_submit(
     request: Request,
-    title: str = Form(...),
-    content: str = Form(...),
+    title: str = Form(""),
+    content: str = Form(""),
     category_id: int = Form(1),
     tags_input: str = Form(""),
     csrf_token: str = Form(""),
@@ -241,8 +241,8 @@ def edit_post_page(request: Request, post_id: int):
 async def edit_post_submit(
     request: Request,
     post_id: int,
-    title: str = Form(...),
-    content: str = Form(...),
+    title: str = Form(""),
+    content: str = Form(""),
     category_id: int = Form(1),
     tags_input: str = Form(""),
     csrf_token: str = Form(""),
