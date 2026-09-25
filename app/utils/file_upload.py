@@ -12,11 +12,11 @@ def save_uploaded_file(file: UploadFile | None, mode: str) -> tuple[bool, str | 
     if mode == "patched":
         # Patched Mode: Enforce extension whitelist and max size limit (5MB)
         if not is_safe_file_extension(file.filename):
-            return False, "Lỗi File Upload 400: File tải lên không hợp lệ hoặc không được hệ thống hỗ trợ!", "upload_error"
+            return False, "File tải lên không hợp lệ hoặc không được hệ thống hỗ trợ!", "upload_error"
         
         # Check size if available
         if file.size and file.size > 5 * 1024 * 1024:
-            return False, "Lỗi File Upload 400: Kích thước file vượt quá giới hạn tối đa cho phép (5MB)!", "upload_error"
+            return False, "Kích thước file vượt quá giới hạn tối đa cho phép (5MB)!", "upload_error"
 
         safe_name = secure_filename(file.filename)
     else:

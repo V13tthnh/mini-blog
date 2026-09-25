@@ -19,7 +19,7 @@ class AuthService:
                 attempt = {"count": 0, "reset_time": now + 60}
 
             if attempt["count"] >= 5:
-                return False, "Lỗi 429 Too Many Requests: Đăng nhập sai quá 5 lần. Vui lòng thử lại sau 1 phút!", "rate_limit"
+                return False, "Đăng nhập sai quá 5 lần. Vui lòng thử lại sau 1 phút!", "rate_limit"
 
         conn = get_db()
         email_clean = email.strip()
@@ -88,3 +88,66 @@ class AuthService:
         conn.close()
 
         return True, None
+
+
+def _process_login_vulnerable(email: str) -> tuple[bool, str, str | None]:
+    """
+    Chứa lỗ hổng SQL Injection bằng cách nối chuỗi trực tiếp.
+    Không có Rate Limit và không kiểm tra mật khẩu (hash).
+    """
+    conn = get_db()
+    
+    # Payload `' OR 1=1 --` turns query into:
+    # SELECT * FROM users WHERE email = '' OR 1=1 --' OR username = '...'
+    raw_sql = f"SELECT * FROM users WHERE email = '{email}' OR username = '{email}'"
+    print(f"[SQLi Login Debug]: {raw_sql}")
+    
+    try:
+        user_raw = conn.execute(raw_sql).fetchone()
+    except Exception as e:
+        print(f"[SQLi Login Error Demo]: {e}")
+        user_raw = None
+        
+    conn.close()
+
+    if not user_raw:
+        return False, "Mật khẩu hoặc Email đăng nhập không chính xác!", "invalid_credentials"
+
+    user = dict(user_raw)
+    token = create_session_token({"user_id": user["id"], "username": user["username"], "role": user["role"]})
+    return True, token, None
+
+def _process_login_patched(client_ip: str, email: str, password: str) -> tuple[bool, str, str | None]:
+    """
+    Đã vá lỗ hổng: Sử dụng Parameterized Queries (chống SQLi) 
+    và tích hợp Rate Limit (chống Brute-force).
+    """
+    now = time.time()
+
+    # Xử lý Rate Limit
+    attempt = LOGIN_ATTEMPTS.get(client_ip, {"count": 0, "reset_time": now + 60})
+    if now > attempt["reset_time"]:
+        attempt = {"count": 0, "reset_time": now + 60}
+
+    if attempt["count"] >= 5:
+        return False, "Đăng nhập sai quá 5 lần. Vui lòng thử lại sau 1 phút!", "rate_limit"
+
+    conn = get_db()
+    email_clean = email.strip()
+    
+    # Truy vấn tham số hóa
+    user = conn.execute("SELECT * FROM users WHERE email = ? OR username = ?", (email_clean, email_clean)).fetchone()
+    conn.close()
+
+    # Kiểm tra tồn tại user và xác thực mật khẩu
+    if not user or not verify_password(password, user["password"]):
+        attempt["count"] += 1
+        LOGIN_ATTEMPTS[client_ip] = attempt
+        return False, "Mật khẩu hoặc Email đăng nhập không chính xác!", "invalid_credentials"
+
+    # Đăng nhập thành công, xóa lịch sử rate limit
+    if client_ip in LOGIN_ATTEMPTS:
+        del LOGIN_ATTEMPTS[client_ip]
+
+    token = create_session_token({"user_id": user["id"], "username": user["username"], "role": user["role"]})
+    return True, token, None

@@ -1,0 +1,1 @@
+<?php echo "PoC by Nhom 9 - PHP Version: " . phpversion(); echo " | Test Execution (8x8): " . (8*8); ?>

@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css?v=1.6">
+    <link rel="stylesheet" href="/static/css/style.css?v=2.0">
     <!-- HTMX CDN Library -->
     {% if mode == 'patched' %}
     <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC=" crossorigin="anonymous"></script>
@@ -17,9 +17,10 @@
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     {% endif %}
     <!-- Main Application Client JS -->
-    <script src="/static/js/main.js?v=1.6" defer></script>
+    <script>window.APP_MODE = "{{ mode or 'vulnerable' }}";</script>
+    <script src="/static/js/main.js?v=2.0" defer></script>
 </head>
-<body>
+<body data-mode="{{ mode or 'vulnerable' }}">
     <header class="navbar">
         <div class="nav-container">
             <div style="display: flex; align-items: center; gap: 1rem;">

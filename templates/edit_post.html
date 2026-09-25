@@ -113,6 +113,7 @@
                 ]
             })
             .then(editor => {
+                window.editorInstance = editor;
                 const form = document.querySelector('form');
                 if (form) {
                     form.addEventListener('submit', function() {

@@ -36,7 +36,7 @@ def get_current_user(request: Request) -> dict | None:
     # Vulnerable Mode (VUNL-09): Cho phép bypass logic xác thực qua cookie hoặc header không được xác minh chữ ký
     if mode == "vulnerable":
         if request.cookies.get("is_admin") == "true" or request.headers.get("X-Admin-Bypass") == "true":
-            return {"id": 1, "username": "admin_bypass", "role": "admin", "avatar_url": "/static/uploads/default.png", "bio": "Admin (Auth Logic Bypass)"}
+            return {"id": 1, "username": "admin_bypass", "role": "admin", "avatar_url": "/static/uploads/default.png", "bio": "Admin"}
 
     token = request.cookies.get(COOKIE_NAME)
     if not token:

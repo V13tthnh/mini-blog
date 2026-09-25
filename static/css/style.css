@@ -1508,3 +1508,45 @@ input::-webkit-contacts-auto-fill-button {
   font-size: 0.8125rem;
   margin-bottom: 1rem;
 }
+
+/* ==========================================================================
+   CLIENT-SIDE FORM VALIDATION STYLES (PATCHED MODE)
+   ========================================================================== */
+.form-control.is-invalid,
+input.is-invalid,
+select.is-invalid,
+textarea.is-invalid {
+  border-color: var(--destructive) !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.18) !important;
+  background-color: #fff5f5 !important;
+}
+
+.form-error-msg,
+.form-error-msg span {
+  color: #dc2626 !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  animation: errorFadeIn 0.2s ease-in-out;
+}
+
+.form-error-msg svg {
+  width: 12px !important;
+  height: 12px !important;
+  flex-shrink: 0 !important;
+  stroke: #dc2626 !important;
+}
+
+@keyframes errorFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
